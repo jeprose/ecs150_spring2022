@@ -3,3 +3,9 @@
 =======
 *.vscode
 >>>>>>> dfd5a3589151a6d96dd8c3c5a2720b2ed987310c
+hardlink
+linked_prof
+.gitignore
+softlink
+reallysoftlink
+xyzzy
