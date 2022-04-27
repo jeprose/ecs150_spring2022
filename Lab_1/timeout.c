@@ -15,10 +15,11 @@ void delay(int number_of_seconds)
     // wait until end of delay 
     while (clock() < end);
 }
-
+void sighandler(int signum){
+    exit(0);
+}
 int main(int argc, char *argv[] ) {
     //catch inccorrect formatting or negative delays
-    printf("%d\n", argc);
     if(argc < 3 || argc > 6){
         printf("Format should be: ./timeout.exe seconds command");
         return 0;
@@ -30,26 +31,25 @@ int main(int argc, char *argv[] ) {
     }
     char* path = argv[2];
     int sleepTime = atoi(argv[1]);
-    char const *argVec[] = {"p", "arg1", "arg2", "arg3", NULL};
+    char const *argVec[] = {"p", NULL, NULL, NULL, NULL};
     const char * envVec[] = {NULL};
-
+    signal(SIGCHLD, sighandler);
     if(argc >= 3){
         for(int i = 2; i < argc; i++){
             argVec[i-2] = argv[i];
-            printf("%s\n",argVec[i-2]);
         }
     }
 
     pid_t process_id = fork();
     if(process_id == 0){
         if(execve(path, argVec, envVec) == -1){
-            perror("uh oh what, somthing happened: ");
+            perror("execve");
+            return 0;
         };
     }
     else{
         sleep(sleepTime);
         kill(process_id, 9);
     }
-    printf("Finished executing.\n");
     return 0;
 }
